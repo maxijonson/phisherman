@@ -1,4 +1,5 @@
 import Chance from "chance";
+import removeSpecialChars from "../../utils/removeSpecialChars";
 
 /**
  * f - first name \
@@ -144,5 +145,5 @@ export default (
         }
     }
 
-    return `${email}@${domain}`;
+    return `${removeSpecialChars(email)}@${domain}`;
 };
