@@ -54,7 +54,7 @@ const CWD = process.cwd();
             },
             async (argv) => {
                 const config = new Config(argv.config);
-                const runner = new Runner(config);
+                const runner = new Runner(config, argv.iterations);
                 await runner.run();
             }
         )
