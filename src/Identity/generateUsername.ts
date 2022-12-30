@@ -1,6 +1,6 @@
 import Chance from "chance";
 import { generateUsername } from "unique-username-generator";
-import removeSpecialChars from "../../utils/removeSpecialChars";
+import removeSpecialChars from "../utils/removeSpecialChars";
 
 /**
  * f - first name \

@@ -2,8 +2,8 @@ import yargs from "yargs";
 import chalk from "chalk";
 import fs from "fs-extra";
 import path from "path";
-import Config from "./classes/Config/Config";
-import Runner from "./classes/Runner/Runner";
+import Config from "./Config/Config";
+import Runner from "./Runner/Runner";
 
 /**
  * Commands:
