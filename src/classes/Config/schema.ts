@@ -6,14 +6,10 @@ export const configSchema = z.object({
         z.object({
             path: z.string(),
             method: z
-                .string()
-                .refine(
-                    (value) => ["GET", "POST", "PUT", "DELETE"].includes(value),
-                    {
-                        message:
-                            "'method' must be one of 'GET', 'POST', 'PUT', or 'DELETE'",
-                    }
-                ),
+                .literal("GET")
+                .or(z.literal("POST"))
+                .or(z.literal("PUT"))
+                .or(z.literal("DELETE")),
             data: z.object({
                 type: z
                     .literal("form-data")
