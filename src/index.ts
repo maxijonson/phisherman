@@ -12,24 +12,41 @@ import Runner from "./Runner/Runner";
  */
 
 const CWD = process.cwd();
+const DEFAULT_CONFIG = "phisherman.config.json";
 
 (async () => {
     const argv = await yargs
         .scriptName("phisherman")
         .command(
-            "init",
+            "init [name]",
             "Generates a config file in the directory where the command is run.",
             (yargs) => {
-                return yargs;
+                return yargs.positional("name", {
+                    type: "string",
+                    description: "The name of the config file to generate.",
+                    default: DEFAULT_CONFIG,
+                });
             },
-            () => {
+            ({ name }) => {
+                const fileName = name.endsWith(".json") ? name : `${name}.json`;
+                const command =
+                    fileName === DEFAULT_CONFIG
+                        ? "phisherman run"
+                        : `phisherman run ${fileName}`;
                 fs.copySync(
                     path.join(__dirname, "config.example.json"),
-                    path.join(CWD, "phisherman.config.json")
+                    path.join(CWD, fileName)
                 );
                 console.info(
                     chalk.green(
-                        "✔ phisherman.config.json config file generated!"
+                        `✔ Phisherman config file generated: ${fileName}`
+                    )
+                );
+                console.info(
+                    chalk.blue(
+                        `▶ Edit the config file to your liking and run '${chalk.bold(
+                            command
+                        )}' to start the spammer.`
                     )
                 );
             }
@@ -41,7 +58,7 @@ const CWD = process.cwd();
                 return yargs
                     .option("config", {
                         type: "string",
-                        default: path.join(CWD, "phisherman.config.json"),
+                        default: path.join(CWD, DEFAULT_CONFIG),
                         alias: "c",
                         describe: "The config file to use.",
                     })
