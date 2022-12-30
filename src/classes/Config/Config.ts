@@ -2,8 +2,8 @@ import fs from "fs-extra";
 import { ConfigModel, configSchema } from "./schema";
 
 class Config {
-    private readonly baseUrl: ConfigModel["baseUrl"];
-    private readonly endpoints: ConfigModel["endpoints"];
+    public readonly baseUrl: ConfigModel["baseUrl"];
+    public readonly endpoints: ConfigModel["endpoints"];
 
     constructor(path: string) {
         if (!fs.existsSync(path)) {
