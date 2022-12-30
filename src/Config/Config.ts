@@ -1,4 +1,3 @@
-import fs from "fs-extra";
 import { ConfigModel, configSchema } from "./schema";
 
 interface ConfigOptions {
@@ -13,15 +12,12 @@ class Config {
     public readonly endpoints: ConfigModel["endpoints"];
     public readonly iterations: ConfigModel["iterations"];
 
-    constructor(path: string, options?: ConfigOptions) {
-        if (!fs.existsSync(path)) {
-            throw new Error(`Config file not found at ${path}`);
-        }
+    constructor(configObject: ConfigModel | object, options?: ConfigOptions) {
         const {
             baseUrl,
             endpoints,
             iterations = 100,
-        } = configSchema.parse(fs.readJSONSync(path));
+        } = configSchema.parse(configObject);
 
         this.baseUrl = baseUrl;
         this.endpoints = endpoints;

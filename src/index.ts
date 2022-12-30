@@ -69,7 +69,21 @@ const DEFAULT_CONFIG = "phisherman.config.json";
                     });
             },
             async (argv) => {
-                const config = new Config(argv.config, {
+                if (!fs.existsSync(argv.config)) {
+                    console.error(
+                        chalk.red(
+                            `✖ Config file not found: ${
+                                argv.config
+                            }. Run '${chalk.bold(
+                                "phisherman init"
+                            )}' to generate a config file.`
+                        )
+                    );
+                    return;
+                }
+
+                const configObject = fs.readJSONSync(argv.config);
+                const config = new Config(configObject, {
                     iterations: argv.iterations,
                 });
                 const runner = new Runner(config);
