@@ -20,7 +20,7 @@ class Config {
         const {
             baseUrl,
             endpoints,
-            iterations = 1,
+            iterations = 100,
         } = configSchema.parse(fs.readJSONSync(path));
 
         this.baseUrl = baseUrl;

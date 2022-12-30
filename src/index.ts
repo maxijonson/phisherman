@@ -64,7 +64,6 @@ const DEFAULT_CONFIG = "phisherman.config.json";
                     })
                     .option("iterations", {
                         type: "number",
-                        default: 100,
                         alias: "i",
                         describe: "The number of fake identities to create.",
                     });
