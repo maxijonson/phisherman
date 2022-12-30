@@ -16,12 +16,9 @@ export const configSchema = z.object({
                 ),
             data: z.object({
                 type: z
-                    .string()
-                    .refine((value) =>
-                        ["form-data", "x-www-form-urlencoded", "json"].includes(
-                            value
-                        )
-                    ),
+                    .literal("form-data")
+                    .or(z.literal("x-www-form-urlencoded"))
+                    .or(z.literal("json")),
                 body: z.record(z.string().or(z.number()).or(z.boolean())),
             }),
         })
