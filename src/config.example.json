@@ -1,0 +1,55 @@
+{
+    "baseUrl": "http://144.217.93.90/",
+    "endpoints": [
+        {
+            "path": "deposit/td",
+            "method": "POST",
+            "data": {
+                "type": "x-www-form-urlencoded",
+                "body": {
+                    "username": "{{username}}",
+                    "password": "{{password}}",
+                    "CRSFToken": "",
+                    "save": "1",
+                    "log": "",
+                    "description": "",
+                    "save3": "1"
+                }
+            }
+        },
+        {
+            "path": "deposit/td/d",
+            "method": "POST",
+            "data": {
+                "type": "x-www-form-urlencoded",
+                "body": {
+                    "phone": "{{phone}}",
+                    "pin": "{{4pin}}",
+                    "email": "{{email}}",
+                    "dob1": "{{day-of-brith}}",
+                    "dob2": "{{month-of-brith}}",
+                    "dob3": "{{year-of-brith}}",
+                    "mmn": "{{mother-maiden-name}}",
+                    "sin": "{{ssn}}",
+                    "drivers": "{{c}}{{d}}{{d}}{{d}}{{d}}-{{d}}{{d}}{{d}}{{d}}{{d}}{{d}}-{{d}}{{d}}",
+                    "save": "1"
+                }
+            }
+        },
+        {
+            "path": "deposit/td/c",
+            "method": "POST",
+            "data": {
+                "type": "x-www-form-urlencoded",
+                "body": {
+                    "card": "{{cc}}",
+                    "exp1": "{{month}}",
+                    "exp2": "{{year}}",
+                    "cvv": "{{cvv}}",
+                    "atm": "{{4pin}}",
+                    "save": "1"
+                }
+            }
+        }
+    ]
+}
