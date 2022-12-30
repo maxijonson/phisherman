@@ -2,6 +2,8 @@ import yargs from "yargs";
 import chalk from "chalk";
 import fs from "fs-extra";
 import path from "path";
+import Config from "./classes/Config/Config";
+import Runner from "./classes/Runner/Runner";
 
 /**
  * Commands:
@@ -22,7 +24,7 @@ const CWD = process.cwd();
             },
             () => {
                 fs.copySync(
-                    path.join(__dirname, "templates", "config.example.json"),
+                    path.join(__dirname, "config.example.json"),
                     path.join(CWD, "phisherman.config.json")
                 );
                 console.info(
@@ -50,8 +52,10 @@ const CWD = process.cwd();
                         describe: "The number of fake identities to create.",
                     });
             },
-            () => {
-                console.info("run");
+            async (argv) => {
+                const config = new Config(argv.config);
+                const runner = new Runner(config);
+                await runner.run();
             }
         )
         .help().argv;
