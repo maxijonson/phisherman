@@ -1,7 +1,7 @@
 import Config from "../Config/Config";
 
 class Runner {
-    constructor(private config: Config, private iterations: number) {}
+    constructor(private config: Config) {}
 
     public async run() {
         console.info("Running...");

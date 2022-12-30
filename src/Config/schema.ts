@@ -2,6 +2,7 @@ import { z } from "zod";
 
 export const configSchema = z.object({
     baseUrl: z.string().url("'baseUrl' must be a valid URL"),
+    iterations: z.number().min(1, "iterations must be at least 1").optional(),
     endpoints: z.array(
         z.object({
             path: z.string(),

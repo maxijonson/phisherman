@@ -70,8 +70,10 @@ const DEFAULT_CONFIG = "phisherman.config.json";
                     });
             },
             async (argv) => {
-                const config = new Config(argv.config);
-                const runner = new Runner(config, argv.iterations);
+                const config = new Config(argv.config, {
+                    iterations: argv.iterations,
+                });
+                const runner = new Runner(config);
                 await runner.run();
             }
         )
