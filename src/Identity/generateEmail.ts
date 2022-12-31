@@ -1,4 +1,4 @@
-import Chance from "chance";
+import rand from "../utils/rand";
 import removeSpecialChars from "../utils/removeSpecialChars";
 
 /**
@@ -92,8 +92,6 @@ const EMAIL_PATTERNS = [
     "uy",
     "u.y",
 ] as const;
-
-const rand = new Chance();
 
 export default (
     firstName: string,

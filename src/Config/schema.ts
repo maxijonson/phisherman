@@ -40,6 +40,7 @@ export const configSchema = z.object({
                     .or(z.literal("json")),
                 body: z.record(z.string().or(z.number()).or(z.boolean())),
             }),
+            headers: z.record(z.string()).default({}),
         })
     ),
 });

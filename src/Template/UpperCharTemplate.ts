@@ -1,7 +1,5 @@
-import Chance from "chance";
+import rand from "../utils/rand";
 import Template from "./Template";
-
-const rand = Chance();
 
 class UpperCharTemplate extends Template {
     public static readonly template = "C";

@@ -1,5 +1,5 @@
-import Chance from "chance";
 import generator from "generate-password";
+import rand from "../utils/rand";
 
 /**
  * f - first name \
@@ -32,8 +32,6 @@ const PASSWORD_PATTERN = [
 
     "c",
 ] as const;
-
-const rand = new Chance();
 
 const leet: { [key: string]: string[] } = {
     a: ["@", "4"],

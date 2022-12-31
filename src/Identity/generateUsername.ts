@@ -1,5 +1,5 @@
-import Chance from "chance";
 import { generateUsername } from "unique-username-generator";
+import rand from "../utils/rand";
 import removeSpecialChars from "../utils/removeSpecialChars";
 
 /**
@@ -42,8 +42,6 @@ const USER_PATTERNS = [
     "un",
     "uy",
 ] as const;
-
-const rand = new Chance();
 
 export default (firstName: string, lastName: string, year: number) => {
     const pattern = rand.pickone<typeof USER_PATTERNS[number]>([

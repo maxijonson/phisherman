@@ -1,9 +1,7 @@
-import Chance from "chance";
+import rand from "../utils/rand";
 import generateEmail from "./generateEmail";
 import generatePassword from "./generatePassword";
 import generateUsername from "./generateUsername";
-
-const rand = new Chance();
 
 interface CreditCard {
     num: string;

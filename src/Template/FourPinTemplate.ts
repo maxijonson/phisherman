@@ -1,7 +1,5 @@
-import Chance from "chance";
+import rand from "../utils/rand";
 import Template from "./Template";
-
-const rand = Chance();
 
 class FourPinTemplate extends Template {
     public static readonly template = "4pin";
