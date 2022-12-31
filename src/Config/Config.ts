@@ -13,11 +13,8 @@ class Config {
     public readonly iterations: ConfigModel["iterations"];
 
     constructor(configObject: ConfigModel | object, options?: ConfigOptions) {
-        const {
-            baseUrl,
-            endpoints,
-            iterations = 100,
-        } = configSchema.parse(configObject);
+        const { baseUrl, endpoints, iterations } =
+            configSchema.parse(configObject);
 
         this.baseUrl = baseUrl;
         this.endpoints = endpoints;

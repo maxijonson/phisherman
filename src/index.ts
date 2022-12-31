@@ -4,6 +4,7 @@ import fs from "fs-extra";
 import path from "path";
 import Config from "./Config/Config";
 import Runner from "./Runner/Runner";
+import Identity from "./Identity/Identity";
 
 /**
  * Commands:
@@ -93,6 +94,7 @@ const DEFAULT_CONFIG = "phisherman.config.json";
         .help().argv;
 
     if (argv._.length === 0) {
+        console.info(new Identity());
         yargs.showHelp();
     }
 })();

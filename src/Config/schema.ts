@@ -1,11 +1,34 @@
 import { z } from "zod";
 
 export const configSchema = z.object({
-    baseUrl: z.string().url("'baseUrl' must be a valid URL"),
-    iterations: z.number().min(1, "iterations must be at least 1").optional(),
+    baseUrl: z
+        .string()
+        .url("'baseUrl' must be a valid URL")
+        .transform((url) => {
+            if (url.endsWith("/")) {
+                return url.slice(0, -1);
+            }
+            return url;
+        }),
+    iterations: z.number().min(1, "iterations must be at least 1").default(100),
     endpoints: z.array(
         z.object({
-            path: z.string(),
+            path: z
+                .string()
+                .refine((path) => {
+                    if (!path[0].match(/[a-zA-Z/_]/)) {
+                        throw new Error(
+                            "path must start with a letter, number, slash (/) or underscore (_)"
+                        );
+                    }
+                    return true;
+                })
+                .transform((path) => {
+                    if (path.startsWith("/")) {
+                        return path.slice(1);
+                    }
+                    return path;
+                }),
             method: z
                 .literal("GET")
                 .or(z.literal("POST"))

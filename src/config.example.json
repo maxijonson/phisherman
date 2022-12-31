@@ -26,12 +26,12 @@
                     "phone": "{{phone}}",
                     "pin": "{{4pin}}",
                     "email": "{{email}}",
-                    "dob1": "{{day-of-brith}}",
-                    "dob2": "{{month-of-brith}}",
-                    "dob3": "{{year-of-brith}}",
+                    "dob1": "{{day-of-birth}}",
+                    "dob2": "{{month-of-birth}}",
+                    "dob3": "{{year-of-birth}}",
                     "mmn": "{{mother-maiden-name}}",
                     "sin": "{{ssn}}",
-                    "drivers": "{{c}}{{d}}{{d}}{{d}}{{d}}-{{d}}{{d}}{{d}}{{d}}{{d}}{{d}}-{{d}}{{d}}",
+                    "drivers": "{{C}}{{d}}{{d}}{{d}}{{d}}-{{d}}{{d}}{{d}}{{d}}{{d}}{{d}}-{{d}}{{d}}",
                     "save": "1"
                 }
             }
@@ -43,8 +43,8 @@
                 "type": "x-www-form-urlencoded",
                 "body": {
                     "card": "{{cc}}",
-                    "exp1": "{{month}}",
-                    "exp2": "{{year}}",
+                    "exp1": "{{exp-month}}",
+                    "exp2": "{{exp-year}}",
                     "cvv": "{{cvv}}",
                     "atm": "{{4pin}}",
                     "save": "1"
