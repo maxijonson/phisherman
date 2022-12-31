@@ -30,10 +30,9 @@ export const configSchema = z.object({
                     return path;
                 }),
             method: z
-                .literal("GET")
+                .literal("PATCH")
                 .or(z.literal("POST"))
-                .or(z.literal("PUT"))
-                .or(z.literal("DELETE")),
+                .or(z.literal("PUT")),
             data: z.object({
                 type: z
                     .literal("form-data")

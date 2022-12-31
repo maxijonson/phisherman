@@ -68,34 +68,35 @@ class Runner {
                 const method = endpoint.method.toLowerCase();
                 const data = this.getTransformedData(endpoint.data, identity);
 
-                console.info(`⏳ ${method.toUpperCase()} ${url} :`);
-                console.info(data);
+                try {
+                    const response = await axios({
+                        url,
+                        method,
+                        data,
+                        headers: {
+                            "User-Agent":
+                                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+                        },
+                    });
 
-                // try {
-                //     const response = await axios({
-                //         url,
-                //         method,
-                //         data,
-                //     });
-
-                //     console.info(
-                //         chalk.green(
-                //             `✔ ${method.toUpperCase()} ${url} - ${
-                //                 response.status
-                //             }`
-                //         )
-                //     );
-                // } catch (error) {
-                //     console.error(
-                //         chalk.red(
-                //             `✖ ${method.toUpperCase()} ${url} - ${
-                //                 error.response.status
-                //             }`
-                //         )
-                //     );
-                // }
+                    console.info(
+                        chalk.green(
+                            `✔ ${method.toUpperCase()} ${url} - ${
+                                response.status
+                            }`
+                        )
+                    );
+                } catch (error) {
+                    console.error(error);
+                    console.error(
+                        chalk.red(
+                            `✖ ${method.toUpperCase()} ${url} - ${
+                                error.response.status
+                            }`
+                        )
+                    );
+                }
             }
-            process.exit(0);
         }
     }
 }
