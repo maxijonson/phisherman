@@ -13,6 +13,7 @@ interface CreditCard {
 }
 
 class Identity {
+    public readonly id: string;
     public readonly gender: "male" | "female";
     public readonly firstName: string;
     public readonly lastName: string;
@@ -37,6 +38,7 @@ class Identity {
     public readonly ua: string;
 
     constructor() {
+        this.id = rand.guid();
         this.gender = rand.pickone(["male", "female"]);
         this.firstName = rand.first({ gender: this.gender });
         this.lastName = rand.last();
