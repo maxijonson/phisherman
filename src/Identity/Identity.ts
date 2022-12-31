@@ -1,3 +1,4 @@
+import UserAgent from "user-agents";
 import rand from "../utils/rand";
 import generateEmail from "./generateEmail";
 import generatePassword from "./generatePassword";
@@ -33,6 +34,7 @@ class Identity {
     public readonly visa: CreditCard;
     public readonly mastercard: CreditCard;
     public readonly card: CreditCard;
+    public readonly ua: string;
 
     constructor() {
         this.gender = rand.pickone(["male", "female"]);
@@ -94,6 +96,7 @@ class Identity {
             type: "Mastercard",
         };
         this.card = rand.pickone([this.visa, this.mastercard]);
+        this.ua = new UserAgent().toString();
     }
 }
 

@@ -22,37 +22,43 @@ class Runner {
         }
     }
 
-    private getTransformedData(
-        data: ConfigModel["endpoints"][number]["data"],
-        identity: Identity
-    ) {
-        const transformed: { [key: string]: typeof data["body"][string] } = {};
+    private applyTemplates(obj: object, identity: Identity) {
+        const result: { [key: string]: any } = {};
 
-        for (const [key, value] of Object.entries(data.body)) {
+        for (const [key, value] of Object.entries(obj)) {
             const transformedKey = Template.apply(key, identity);
             const transformedValue =
                 typeof value === "string"
                     ? Template.apply(value, identity)
-                    : value;
-            transformed[transformedKey] = transformedValue;
+                    : value; // TODO: Handle non-string values
+            result[transformedKey] = transformedValue;
         }
+
+        return result;
+    }
+
+    private getTransformedData(
+        data: ConfigModel["endpoints"][number]["data"],
+        identity: Identity
+    ) {
+        const result = this.applyTemplates(data.body, identity);
 
         switch (data.type) {
             case "form-data":
                 const formData = new FormData();
-                for (const [key, value] of Object.entries(transformed)) {
+                for (const [key, value] of Object.entries(result)) {
                     formData.append(key, `${value}`);
                 }
                 return formData;
             case "x-www-form-urlencoded":
                 const urlEncoded = new URLSearchParams();
-                for (const [key, value] of Object.entries(transformed)) {
+                for (const [key, value] of Object.entries(result)) {
                     urlEncoded.append(key, `${value}`);
                 }
                 return urlEncoded;
             default:
             case "json":
-                return transformed;
+                return result;
         }
     }
 
@@ -67,16 +73,14 @@ class Runner {
                 const url = `${this.config.baseUrl}/${endpoint.path}`;
                 const method = endpoint.method.toLowerCase();
                 const data = this.getTransformedData(endpoint.data, identity);
+                const headers = this.applyTemplates(endpoint.headers, identity);
 
                 try {
                     const response = await axios({
                         url,
                         method,
                         data,
-                        headers: {
-                            "User-Agent":
-                                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
-                        },
+                        headers,
                     });
 
                     console.info(

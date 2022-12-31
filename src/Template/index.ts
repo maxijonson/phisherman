@@ -32,6 +32,7 @@ import "./SSNShortTemplate";
 import "./SSNTemplate";
 import "./ThreePinTemplate";
 import "./UpperCharTemplate";
+import "./UserAgentTemplate";
 import "./UsernameTemplate";
 import "./VisaCardShortTemplate";
 import "./VisaCardTemplate";

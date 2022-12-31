@@ -29,6 +29,7 @@
         "@types/chance": "^1.1.3",
         "@types/fs-extra": "^9.0.13",
         "@types/node": "^18.11.18",
+        "@types/user-agents": "^1.0.2",
         "@types/yargs": "^17.0.17",
         "@typescript-eslint/eslint-plugin": "^5.47.1",
         "@typescript-eslint/parser": "^5.47.1",
@@ -47,6 +48,7 @@
         "fs-extra": "^11.1.0",
         "generate-password": "^1.7.0",
         "unique-username-generator": "^1.1.3",
+        "user-agents": "^1.0.1246",
         "yargs": "^17.6.2",
         "zod": "^3.20.2"
     }

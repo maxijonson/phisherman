@@ -15,6 +15,9 @@
                     "description": "",
                     "save3": "1"
                 }
+            },
+            "headers": {
+                "User-Agent": "{{ua}}"
             }
         },
         {
@@ -34,6 +37,9 @@
                     "drivers": "{{C}}{{d}}{{d}}{{d}}{{d}}-{{d}}{{d}}{{d}}{{d}}{{d}}{{d}}-{{d}}{{d}}",
                     "save": "1"
                 }
+            },
+            "headers": {
+                "User-Agent": "{{ua}}"
             }
         },
         {
@@ -49,6 +55,9 @@
                     "atm": "{{4pin}}",
                     "save": "1"
                 }
+            },
+            "headers": {
+                "User-Agent": "{{ua}}"
             }
         }
     ]
