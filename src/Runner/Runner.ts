@@ -67,6 +67,7 @@ class Runner {
 
     public async run() {
         for (const identity of this.identities) {
+            let cookie = "";
             for (const endpoint of this.config.endpoints) {
                 const url = `${this.config.baseUrl}/${endpoint.path}`;
                 const method = endpoint.method.toLowerCase();
@@ -86,8 +87,15 @@ class Runner {
                         url,
                         method,
                         data,
-                        headers,
+                        headers: {
+                            ...headers,
+                            Cookie: cookie,
+                        },
                     });
+
+                    if (response.headers["set-cookie"]) {
+                        cookie = response.headers["set-cookie"][0];
+                    }
 
                     console.info(
                         chalk.green(
