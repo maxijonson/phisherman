@@ -46,3 +46,8 @@ export const configSchema = z.object({
 });
 
 export type ConfigModel = z.infer<typeof configSchema>;
+
+export type Endpoint = ConfigModel["endpoints"][number];
+export type EndpointData = Endpoint["data"];
+export type EndpointDataBody = EndpointData["body"];
+export type EndpointHeaders = Endpoint["headers"];

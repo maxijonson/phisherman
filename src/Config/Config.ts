@@ -1,4 +1,4 @@
-import { ConfigModel, configSchema } from "./schema";
+import { ConfigModel, configSchema, Endpoint } from "./schema";
 
 interface ConfigOptions {
     /**
@@ -9,8 +9,8 @@ interface ConfigOptions {
 
 class Config {
     public readonly baseUrl: ConfigModel["baseUrl"];
-    public readonly endpoints: ConfigModel["endpoints"];
     public readonly iterations: ConfigModel["iterations"];
+    public readonly endpoints: Endpoint[];
 
     constructor(configObject: ConfigModel | object, options?: ConfigOptions) {
         const { baseUrl, endpoints, iterations } =

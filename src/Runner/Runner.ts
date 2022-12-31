@@ -3,10 +3,8 @@ import Config from "../Config/Config";
 import Identity from "../Identity/Identity";
 import axios from "axios";
 import chalk from "chalk";
-import { ConfigModel } from "../Config/schema";
+import { Endpoint, EndpointData } from "../Config/schema";
 import Template from "../Template/Template";
-import IdentityCounterTemplate from "../Template/IdentityCounter";
-import EndpointCounterTemplate from "../Template/EndpointCounter";
 
 class Runner {
     private identities: Identity[] = [];
@@ -22,14 +20,18 @@ class Runner {
         }
     }
 
-    private applyTemplates(obj: object, identity: Identity) {
+    private applyTemplates(
+        obj: object,
+        identity: Identity,
+        endpoint: Endpoint
+    ) {
         const result: { [key: string]: any } = {};
 
         for (const [key, value] of Object.entries(obj)) {
-            const transformedKey = Template.apply(key, identity);
+            const transformedKey = Template.apply(key, identity, endpoint);
             const transformedValue =
                 typeof value === "string"
-                    ? Template.apply(value, identity)
+                    ? Template.apply(value, identity, endpoint)
                     : value; // TODO: Handle non-string values
             result[transformedKey] = transformedValue;
         }
@@ -38,10 +40,11 @@ class Runner {
     }
 
     private getTransformedData(
-        data: ConfigModel["endpoints"][number]["data"],
-        identity: Identity
+        data: EndpointData,
+        identity: Identity,
+        endpoint: Endpoint
     ) {
-        const result = this.applyTemplates(data.body, identity);
+        const result = this.applyTemplates(data.body, identity, endpoint);
 
         switch (data.type) {
             case "form-data":
@@ -64,16 +67,19 @@ class Runner {
 
     public async run() {
         for (const identity of this.identities) {
-            // TODO: IF spam is made async, this will need to be changed to handle a per-identity counter
-            IdentityCounterTemplate.resetCounter();
             for (const endpoint of this.config.endpoints) {
-                // TODO: IF spam is made async, this will need to be changed to handle a per-endpoint counter
-                EndpointCounterTemplate.resetCounter();
-
                 const url = `${this.config.baseUrl}/${endpoint.path}`;
                 const method = endpoint.method.toLowerCase();
-                const data = this.getTransformedData(endpoint.data, identity);
-                const headers = this.applyTemplates(endpoint.headers, identity);
+                const data = this.getTransformedData(
+                    endpoint.data,
+                    identity,
+                    endpoint
+                );
+                const headers = this.applyTemplates(
+                    endpoint.headers,
+                    identity,
+                    endpoint
+                );
 
                 try {
                     const response = await axios({
