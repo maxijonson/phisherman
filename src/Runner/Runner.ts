@@ -100,18 +100,19 @@ class Runner {
 
                     console.info(
                         chalk.green(
-                            `✔ ${method.toUpperCase()} ${url} - ${
-                                response.status
-                            }`
+                            "✔",
+                            `[${identity.id}]`,
+                            method.toUpperCase(),
+                            url
                         )
                     );
                 } catch (error) {
-                    console.error(error);
                     console.error(
                         chalk.red(
-                            `✖ ${method.toUpperCase()} ${url} - ${
-                                error.response.status
-                            }`
+                            "❌",
+                            `[${identity.id}]`,
+                            method.toUpperCase(),
+                            url
                         )
                     );
                 }
