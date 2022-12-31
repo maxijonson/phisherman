@@ -82,15 +82,16 @@ class Runner {
                     endpoint
                 );
 
+                if (cookie) {
+                    headers["Cookie"] = cookie;
+                }
+
                 try {
                     const response = await axios({
                         url,
                         method,
                         data,
-                        headers: {
-                            ...headers,
-                            Cookie: cookie,
-                        },
+                        headers,
                     });
 
                     if (response.headers["set-cookie"]) {

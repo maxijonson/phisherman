@@ -53,21 +53,15 @@ const DEFAULT_CONFIG = "phisherman.config.json";
             }
         )
         .command(
-            "run",
+            "run [config]",
             "Runs the phishing spammer.",
             (yargs) => {
-                return yargs
-                    .option("config", {
-                        type: "string",
-                        default: path.join(CWD, DEFAULT_CONFIG),
-                        alias: "c",
-                        describe: "The config file to use.",
-                    })
-                    .option("iterations", {
-                        type: "number",
-                        alias: "i",
-                        describe: "The number of fake identities to create.",
-                    });
+                return yargs.positional("config", {
+                    type: "string",
+                    default: path.join(CWD, DEFAULT_CONFIG),
+                    alias: "c",
+                    describe: "The config file to use.",
+                });
             },
             async (argv) => {
                 if (!fs.existsSync(argv.config)) {
@@ -84,9 +78,7 @@ const DEFAULT_CONFIG = "phisherman.config.json";
                 }
 
                 const configObject = fs.readJSONSync(argv.config);
-                const config = new Config(configObject, {
-                    iterations: argv.iterations,
-                });
+                const config = new Config(configObject);
                 const runner = new Runner(config);
                 await runner.run();
             }
