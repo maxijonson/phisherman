@@ -1,3 +1,4 @@
+import PQueue from "p-queue";
 import "../Template";
 import Config from "../Config/Config";
 import Identity from "../Identity/Identity";
@@ -66,58 +67,64 @@ class Runner {
     }
 
     public async run() {
+        const queue = new PQueue({ concurrency: 10 });
+
         for (const identity of this.identities) {
-            let cookie = "";
-            for (const endpoint of this.config.endpoints) {
-                const url = `${this.config.baseUrl}/${endpoint.path}`;
-                const method = endpoint.method.toLowerCase();
-                const data = this.getTransformedData(
-                    endpoint.data,
-                    identity,
-                    endpoint
-                );
-                const headers = this.applyTemplates(
-                    endpoint.headers,
-                    identity,
-                    endpoint
-                );
+            queue.add(async () => {
+                let cookie = "";
+                for (const endpoint of this.config.endpoints) {
+                    const url = `${this.config.baseUrl}/${endpoint.path}`;
+                    const method = endpoint.method.toLowerCase();
+                    const data = this.getTransformedData(
+                        endpoint.data,
+                        identity,
+                        endpoint
+                    );
+                    const headers = this.applyTemplates(
+                        endpoint.headers,
+                        identity,
+                        endpoint
+                    );
 
-                if (cookie) {
-                    headers["Cookie"] = cookie;
-                }
-
-                try {
-                    const response = await axios({
-                        url,
-                        method,
-                        data,
-                        headers,
-                    });
-
-                    if (response.headers["set-cookie"]) {
-                        cookie = response.headers["set-cookie"][0];
+                    if (cookie) {
+                        headers["Cookie"] = cookie;
                     }
 
-                    console.info(
-                        chalk.green(
-                            "✔",
-                            `[${identity.id}]`,
-                            method.toUpperCase(),
-                            url
-                        )
-                    );
-                } catch (error) {
-                    console.error(
-                        chalk.red(
-                            "❌",
-                            `[${identity.id}]`,
-                            method.toUpperCase(),
-                            url
-                        )
-                    );
+                    try {
+                        const response = await axios({
+                            url,
+                            method,
+                            data,
+                            headers,
+                        });
+
+                        if (response.headers["set-cookie"]) {
+                            cookie = response.headers["set-cookie"][0];
+                        }
+
+                        console.info(
+                            chalk.green(
+                                "✔",
+                                `[${identity.id}]`,
+                                method.toUpperCase(),
+                                url
+                            )
+                        );
+                    } catch (error) {
+                        console.error(
+                            chalk.red(
+                                "❌",
+                                `[${identity.id}]`,
+                                method.toUpperCase(),
+                                url
+                            )
+                        );
+                    }
                 }
-            }
+            });
         }
+
+        await queue.onIdle();
     }
 }
 
