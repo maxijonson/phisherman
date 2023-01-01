@@ -116,7 +116,8 @@ class Runner {
                                 "❌",
                                 `[${identity.id}]`,
                                 method.toUpperCase(),
-                                url
+                                url,
+                                `(${error.response.status})`
                             )
                         );
                     }

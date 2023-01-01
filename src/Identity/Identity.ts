@@ -36,6 +36,8 @@ class Identity {
     public readonly mastercard: CreditCard;
     public readonly card: CreditCard;
     public readonly ua: string;
+    public readonly uaDesktop: string;
+    public readonly uaMobile: string;
 
     constructor() {
         this.id = rand.guid();
@@ -99,6 +101,12 @@ class Identity {
         };
         this.card = rand.pickone([this.visa, this.mastercard]);
         this.ua = new UserAgent().toString();
+        this.uaDesktop = new UserAgent({
+            deviceCategory: "desktop",
+        }).toString();
+        this.uaMobile = new UserAgent({
+            deviceCategory: "mobile",
+        }).toString();
     }
 }
 

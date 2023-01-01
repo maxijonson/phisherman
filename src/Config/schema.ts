@@ -11,6 +11,10 @@ export const configSchema = z.object({
             return url;
         }),
     iterations: z.number().min(1, "iterations must be at least 1").default(100),
+    concurrency: z
+        .number()
+        .min(1, "concurrency must be at least 1")
+        .default(10),
     endpoints: z.array(
         z.object({
             path: z
