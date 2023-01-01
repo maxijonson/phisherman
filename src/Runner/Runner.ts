@@ -67,7 +67,7 @@ class Runner {
     }
 
     public async run() {
-        const queue = new PQueue({ concurrency: 10 });
+        const queue = new PQueue({ concurrency: this.config.concurrency });
 
         for (const identity of this.identities) {
             queue.add(async () => {
