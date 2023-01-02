@@ -161,16 +161,16 @@ import Phisherman, {
     Endpoint,
 } from "@maxijonson/phisherman";
 
-const getInfo = (identity: Identity, endpoint: Endpoint) => {
+const getCustomTemplateValue = (identity: Identity, endpoint: Endpoint) => {
     return `${identity.firstName} ${identity.lastName} ${endpoint.url}`;
 };
 
-Template.registerTemplate("info", getInfo);
+Template.registerTemplate("my-custom-template", getCustomTemplateValue);
 
 const phisherman = new Phisherman({
     /* ... */
     body: {
-        info: "{{info}}",
+        info: "{{my-custom-template}}",
     },
     /* ... */
 });
