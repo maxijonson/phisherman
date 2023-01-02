@@ -5,6 +5,7 @@
     "packages/*"
   ],
   "devDependencies": {
+    "copyfiles": "^2.4.1",
     "lerna": "^6.3.0"
   }
 }
