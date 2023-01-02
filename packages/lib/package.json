@@ -1,6 +1,6 @@
 {
     "name": "@maxijonson/phisherman",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "Spam phishing endpoints with fake data",
     "main": "dist/index.js",
     "scripts": {
