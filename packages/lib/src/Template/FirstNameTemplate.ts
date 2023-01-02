@@ -1,7 +1,7 @@
 import Identity from "../Identity/Identity";
 import Template from "./Template";
 
-class FirstNameTemplate extends Template {
+class FirstNameTemplate {
     public static readonly template = "first-name";
 
     public static getValue(identity: Identity): string {

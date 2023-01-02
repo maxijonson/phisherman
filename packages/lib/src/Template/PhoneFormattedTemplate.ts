@@ -1,7 +1,7 @@
 import Identity from "../Identity/Identity";
 import Template from "./Template";
 
-class PhoneFormattedTemplate extends Template {
+class PhoneFormattedTemplate {
     public static readonly template = "phone-format";
 
     public static getValue(identity: Identity): string {

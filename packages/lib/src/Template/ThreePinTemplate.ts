@@ -1,7 +1,7 @@
 import rand from "../utils/rand";
 import Template from "./Template";
 
-class ThreePinTemplate extends Template {
+class ThreePinTemplate {
     public static readonly template = "3pin";
 
     public static getValue(): string {

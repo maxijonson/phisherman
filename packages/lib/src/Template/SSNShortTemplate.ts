@@ -1,7 +1,7 @@
 import Identity from "../Identity/Identity";
 import Template from "./Template";
 
-class SSNShortTemplate extends Template {
+class SSNShortTemplate {
     public static readonly template = "ssn-short";
 
     public static getValue(identity: Identity): string {

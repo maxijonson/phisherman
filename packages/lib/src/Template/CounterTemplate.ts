@@ -1,6 +1,6 @@
 import Template from "./Template";
 
-class CounterTemplate extends Template {
+class CounterTemplate {
     private static counter = 1;
     public static readonly template = "i";
 

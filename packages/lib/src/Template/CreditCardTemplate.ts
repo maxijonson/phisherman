@@ -1,7 +1,7 @@
 import Identity from "../Identity/Identity";
 import Template from "./Template";
 
-class CreditCardTemplate extends Template {
+class CreditCardTemplate {
     public static readonly template = "cc";
 
     public static getValue(identity: Identity): string {

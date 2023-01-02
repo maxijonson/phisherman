@@ -1,7 +1,7 @@
 import rand from "../utils/rand";
 import Template from "./Template";
 
-class UpperCharTemplate extends Template {
+class UpperCharTemplate {
     public static readonly template = "C";
 
     public static getValue(): string {

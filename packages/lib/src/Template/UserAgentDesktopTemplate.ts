@@ -1,7 +1,7 @@
 import Identity from "../Identity/Identity";
 import Template from "./Template";
 
-class UserAgentDesktopTemplate extends Template {
+class UserAgentDesktopTemplate {
     public static readonly template = "ua-desktop";
 
     public static getValue(identity: Identity): string {

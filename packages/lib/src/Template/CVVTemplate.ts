@@ -1,7 +1,7 @@
 import Identity from "../Identity/Identity";
 import Template from "./Template";
 
-class CVVTemplate extends Template {
+class CVVTemplate {
     public static readonly template = "cvv";
 
     public static getValue(identity: Identity): string {

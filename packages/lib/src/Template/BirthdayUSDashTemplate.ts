@@ -1,7 +1,7 @@
 import Identity from "../Identity/Identity";
 import Template from "./Template";
 
-class BirthdayUSDashTemplate extends Template {
+class BirthdayUSDashTemplate {
     public static readonly template = "birthdayus-dash";
 
     public static getValue(identity: Identity): string {

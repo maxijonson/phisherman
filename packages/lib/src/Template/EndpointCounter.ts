@@ -5,7 +5,7 @@ import Template from "./Template";
 type IdentityId = string;
 type EndpointPath = string;
 
-class EndpointCounterTemplate extends Template {
+class EndpointCounterTemplate {
     private static counters = new Map<IdentityId, Map<EndpointPath, number>>();
     public static readonly template = "k";
 

@@ -1,7 +1,7 @@
 import Identity from "../Identity/Identity";
 import Template from "./Template";
 
-class SINShortTemplate extends Template {
+class SINShortTemplate {
     public static readonly template = "sin-short";
 
     public static getValue(identity: Identity): string {

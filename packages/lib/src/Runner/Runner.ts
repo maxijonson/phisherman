@@ -1,5 +1,5 @@
 import PQueue from "p-queue";
-import "../Template";
+import "../Template"; // HACK: Importing all templates so they register themselves
 import Config from "../Config/Config";
 import Identity from "../Identity/Identity";
 import axios, { AxiosError } from "axios";

@@ -1,7 +1,7 @@
 import Identity from "../Identity/Identity";
 import Template from "./Template";
 
-class IdentityCounterTemplate extends Template {
+class IdentityCounterTemplate {
     private static counters = new Map<string, number>();
     public static readonly template = "j";
 

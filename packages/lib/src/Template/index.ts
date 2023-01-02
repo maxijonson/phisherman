@@ -1,4 +1,3 @@
-// HACK: Use this to register all templates
 export { default as BirthdaySlashTemplate } from "./BirthdaySlashTemplate";
 export { default as BirthdayTemplate } from "./BirthdayTemplate";
 export { default as BirthdayUSDashTemplate } from "./BirthdayUSDashTemplate";
