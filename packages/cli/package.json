@@ -1,6 +1,6 @@
 {
     "name": "@maxijonson/phisherman-cli",
-    "version": "1.0.1",
+    "version": "0.0.0",
     "description": "Spam phishing endpoints with fake data",
     "main": "dist/index.js",
     "scripts": {
@@ -27,6 +27,9 @@
         "dist"
     ],
     "homepage": "https://github.com/maxijonson/phisherman#readme",
+    "publishConfig": {
+        "access": "public"
+    },
     "devDependencies": {
         "@types/fs-extra": "^9.0.13",
         "@types/node": "^18.11.18",
