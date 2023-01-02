@@ -1,6 +1,6 @@
 {
     "name": "@maxijonson/phisherman-cli",
-    "version": "0.0.0",
+    "version": "1.0.0",
     "description": "Spam phishing endpoints with fake data",
     "main": "dist/index.js",
     "scripts": {
@@ -46,7 +46,7 @@
         "typescript": "^4.9.4"
     },
     "dependencies": {
-        "@maxijonson/phisherman": "*",
+        "@maxijonson/phisherman": "^1.0.0",
         "chalk": "^4.1.2",
         "fs-extra": "^11.1.0",
         "yargs": "^17.6.2"
