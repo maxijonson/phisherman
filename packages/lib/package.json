@@ -18,6 +18,9 @@
     "bugs": {
         "url": "https://github.com/maxijonson/phisherman/issues"
     },
+    "files": [
+        "dist"
+    ],
     "homepage": "https://github.com/maxijonson/phisherman#readme",
     "devDependencies": {
         "@types/chance": "^1.1.3",
