@@ -5,48 +5,73 @@ export const configSchema = z.object({
         .string()
         .url("'baseUrl' must be a valid URL")
         .transform((url) => {
-            if (url.endsWith("/")) {
-                return url.slice(0, -1);
+            let u = url;
+            while (u.endsWith("/")) {
+                u = u.slice(0, -1);
             }
-            return url;
+            return u;
         }),
     iterations: z.number().min(1, "iterations must be at least 1").default(100),
     concurrency: z
         .number()
         .min(1, "concurrency must be at least 1")
         .default(10),
-    endpoints: z.array(
-        z.object({
-            path: z
-                .string()
-                .refine((path) => {
-                    if (!path[0].match(/[a-zA-Z/_]/)) {
-                        throw new Error(
-                            "path must start with a letter, number, slash (/) or underscore (_)"
-                        );
-                    }
-                    return true;
-                })
-                .transform((path) => {
-                    if (path.startsWith("/")) {
-                        return path.slice(1);
-                    }
-                    return path;
+    endpoints: z
+        .array(
+            z.object({
+                path: z
+                    .string()
+                    .or(z.array(z.string()))
+                    .transform((path) => {
+                        if (typeof path === "string") {
+                            return [path];
+                        }
+                        return path;
+                    })
+                    .refine((paths) => {
+                        for (const path of paths) {
+                            if (!path[0].match(/[a-zA-Z/_]/)) {
+                                throw new Error(
+                                    "path must start with a letter, number, slash (/) or underscore (_)"
+                                );
+                            }
+                        }
+                        return true;
+                    })
+                    .transform((paths) => {
+                        return paths.map((path) => {
+                            let p = path;
+                            while (p.startsWith("/")) {
+                                p = p.slice(1);
+                            }
+                            return p;
+                        });
+                    }),
+                method: z
+                    .literal("PATCH")
+                    .or(z.literal("POST"))
+                    .or(z.literal("PUT")),
+                data: z.object({
+                    type: z
+                        .literal("form-data")
+                        .or(z.literal("x-www-form-urlencoded"))
+                        .or(z.literal("json")),
+                    body: z.record(z.string().or(z.number()).or(z.boolean())),
                 }),
-            method: z
-                .literal("PATCH")
-                .or(z.literal("POST"))
-                .or(z.literal("PUT")),
-            data: z.object({
-                type: z
-                    .literal("form-data")
-                    .or(z.literal("x-www-form-urlencoded"))
-                    .or(z.literal("json")),
-                body: z.record(z.string().or(z.number()).or(z.boolean())),
-            }),
-            headers: z.record(z.string()).default({}),
-        })
-    ),
+                headers: z.record(z.string()).default({}),
+            })
+        )
+        .transform((endpoints) => {
+            return endpoints.reduce((acc, endpoint) => {
+                for (const path of endpoint.path) {
+                    acc.push({
+                        ...endpoint,
+                        path,
+                    });
+                }
+                return acc;
+            }, [] as (Omit<typeof endpoints[number], "path"> & { path: string })[]);
+        }),
 });
 
 export type ConfigModel = z.infer<typeof configSchema>;

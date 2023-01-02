@@ -2,7 +2,7 @@ import PQueue from "p-queue";
 import "../Template";
 import Config from "../Config/Config";
 import Identity from "../Identity/Identity";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import chalk from "chalk";
 import { Endpoint, EndpointData } from "../Config/schema";
 import Template from "../Template/Template";
@@ -111,15 +111,26 @@ class Runner {
                             )
                         );
                     } catch (error) {
-                        console.error(
-                            chalk.red(
-                                "❌",
-                                `[${identity.id}]`,
-                                method.toUpperCase(),
-                                url,
-                                `(${error.response.status})`
-                            )
-                        );
+                        if (error instanceof AxiosError && error.response) {
+                            console.error(
+                                chalk.red(
+                                    "✗",
+                                    `[${identity.id}]`,
+                                    method.toUpperCase(),
+                                    url,
+                                    `(${error.response.status})`
+                                )
+                            );
+                        } else {
+                            console.error(
+                                chalk.red(
+                                    "✗",
+                                    `[${identity.id}]`,
+                                    method.toUpperCase(),
+                                    url
+                                )
+                            );
+                        }
                     }
                 }
             });

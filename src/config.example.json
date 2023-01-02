@@ -17,7 +17,7 @@
                 }
             },
             "headers": {
-                "User-Agent": "{{ua}}"
+                "User-Agent": "{{ua-mobile}}"
             }
         },
         {
@@ -39,7 +39,7 @@
                 }
             },
             "headers": {
-                "User-Agent": "{{ua}}"
+                "User-Agent": "{{ua-mobile}}"
             }
         },
         {
@@ -57,7 +57,7 @@
                 }
             },
             "headers": {
-                "User-Agent": "{{ua}}"
+                "User-Agent": "{{ua-mobile}}"
             }
         }
     ]
