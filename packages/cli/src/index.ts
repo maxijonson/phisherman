@@ -2,9 +2,7 @@ import yargs from "yargs";
 import chalk from "chalk";
 import fs from "fs-extra";
 import path from "path";
-import Config from "./Config/Config";
-import Runner from "./Runner/Runner";
-import Identity from "./Identity/Identity";
+import Phisherman from "@maxijonson/phisherman";
 
 /**
  * Commands:
@@ -78,15 +76,13 @@ const DEFAULT_CONFIG = "phisherman.config.json";
                 }
 
                 const configObject = fs.readJSONSync(argv.config);
-                const config = new Config(configObject);
-                const runner = new Runner(config);
-                await runner.run();
+                const phisherman = new Phisherman(configObject);
+                await phisherman.run();
             }
         )
         .help().argv;
 
     if (argv._.length === 0) {
-        console.info(new Identity());
         yargs.showHelp();
     }
 })();

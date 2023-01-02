@@ -6,7 +6,7 @@ class Config {
     public readonly concurrency: ConfigModel["concurrency"];
     public readonly endpoints: Endpoint[];
 
-    constructor(configObject: ConfigModel | object) {
+    constructor(configObject: ConfigModel) {
         const { baseUrl, endpoints, iterations, concurrency } =
             configSchema.parse(configObject);
 
