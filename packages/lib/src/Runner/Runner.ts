@@ -2,31 +2,30 @@ import PQueue from "p-queue";
 import "../Template"; // HACK: Importing all templates so they register themselves
 import Config from "../Config/Config";
 import Identity from "../Identity/Identity";
-import axios, { AxiosResponse } from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
 import { Endpoint, EndpointData } from "../Config/schema";
 import Template from "../Template/Template";
+
+interface OnEndpointSuccessCallback {
+    (response: AxiosResponse, identity: Identity, endpoint: Endpoint): void;
+}
+
+interface OnEndpointErrorCallback {
+    (error: AxiosError | Error, identity: Identity, endpoint: Endpoint): void;
+}
+
+interface OnIdentityCompleteCallback {
+    (identity: Identity, successCount: number): void;
+}
 
 class Runner {
     private identities: Identity[] = [];
     private queue: PQueue;
     private queueHasInit = false;
 
-    private onSuccessCallbacks: ((
-        response: AxiosResponse,
-        identity: Identity,
-        endpoint: Endpoint
-    ) => void)[] = [];
-
-    private onErrorCallbacks: ((
-        error: Error,
-        identity: Identity,
-        endpoint: Endpoint
-    ) => void)[] = [];
-
-    private onIdentityCompleteCallbacks: ((
-        identity: Identity,
-        successCount: number
-    ) => void)[] = [];
+    private onEndpointSuccessCallbacks: OnEndpointSuccessCallback[] = [];
+    private onEndpointErrorCallbacks: OnEndpointErrorCallback[] = [];
+    private onIdentityCompleteCallbacks: OnIdentityCompleteCallback[] = [];
 
     constructor(private config: Config) {
         this.generateIdentities();
@@ -132,7 +131,7 @@ class Runner {
         identity: Identity,
         endpoint: Endpoint
     ) {
-        for (const callback of this.onSuccessCallbacks) {
+        for (const callback of this.onEndpointSuccessCallbacks) {
             callback(response, identity, endpoint);
         }
     }
@@ -142,7 +141,7 @@ class Runner {
         identity: Identity,
         endpoint: Endpoint
     ) {
-        for (const callback of this.onErrorCallbacks) {
+        for (const callback of this.onEndpointErrorCallbacks) {
             callback(error, identity, endpoint);
         }
     }
@@ -209,38 +208,37 @@ class Runner {
     /**
      * Callback that is called when an endpoint has been successfully sent a request to.
      */
-    public onEndpointSuccess(callback: typeof this.onSuccessCallbacks[0]) {
-        this.onSuccessCallbacks.push(callback);
+    public onEndpointSuccess(callback: OnEndpointSuccessCallback) {
+        this.onEndpointSuccessCallbacks.push(callback);
     }
 
     /**
      * Removes the given callback from the list of callbacks that are called when an endpoint has been successfully sent a request to.
      */
-    public offEndpointSuccess(callback: typeof this.onSuccessCallbacks[0]) {
-        this.onSuccessCallbacks = this.onSuccessCallbacks.filter(
-            (cb) => cb !== callback
-        );
+    public offEndpointSuccess(callback: OnEndpointSuccessCallback) {
+        this.onEndpointSuccessCallbacks =
+            this.onEndpointSuccessCallbacks.filter((cb) => cb !== callback);
     }
 
     /**
      * Removes all callbacks that are called when an endpoint has been successfully sent a request to.
      */
     public offAllEndpointSuccess() {
-        this.onSuccessCallbacks = [];
+        this.onEndpointSuccessCallbacks = [];
     }
 
     /**
      * Callback that is called when an endpoint has failed to send a request to.
      */
-    public onEndpointError(callback: typeof this.onErrorCallbacks[0]) {
-        this.onErrorCallbacks.push(callback);
+    public onEndpointError(callback: OnEndpointErrorCallback) {
+        this.onEndpointErrorCallbacks.push(callback);
     }
 
     /**
      * Removes the given callback from the list of callbacks that are called when an endpoint has failed to send a request to.
      */
-    public offEndpointError(callback: typeof this.onErrorCallbacks[0]) {
-        this.onErrorCallbacks = this.onErrorCallbacks.filter(
+    public offEndpointError(callback: OnEndpointErrorCallback) {
+        this.onEndpointErrorCallbacks = this.onEndpointErrorCallbacks.filter(
             (cb) => cb !== callback
         );
     }
@@ -249,24 +247,20 @@ class Runner {
      * Removes all callbacks that are called when an endpoint has failed to send a request to.
      */
     public offAllEndpointError() {
-        this.onErrorCallbacks = [];
+        this.onEndpointErrorCallbacks = [];
     }
 
     /**
      * Callback that is called when an identity has completed all endpoints.
      */
-    public onIdentityComplete(
-        callback: typeof this.onIdentityCompleteCallbacks[0]
-    ) {
+    public onIdentityComplete(callback: OnIdentityCompleteCallback) {
         this.onIdentityCompleteCallbacks.push(callback);
     }
 
     /**
      * Removes the given callback from the list of callbacks that are called when an identity has completed all endpoints.
      */
-    public offIdentityComplete(
-        callback: typeof this.onIdentityCompleteCallbacks[0]
-    ) {
+    public offIdentityComplete(callback: OnIdentityCompleteCallback) {
         this.onIdentityCompleteCallbacks =
             this.onIdentityCompleteCallbacks.filter((cb) => cb !== callback);
     }

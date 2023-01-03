@@ -47,6 +47,8 @@ class InitCommand {
             )
         );
     }
+
+    private constructor() {}
 }
 
 export default InitCommand;

@@ -40,9 +40,38 @@ class RunCommand {
 
         const configObject = fs.readJSONSync(configPath);
         const phisherman = new Phisherman(configObject);
+
+        phisherman.onEndpointSuccess((response, identity, endpoint) => {
+            console.info(
+                chalk.green(
+                    `✔ [${identity.id}] - ${endpoint.method} ${endpoint.path}`
+                )
+            );
+        });
+
+        phisherman.onEndpointError((error: any, identity, endpoint) => {
+            let m = `✖ [${identity.id}] - ${endpoint.method} ${endpoint.path}`;
+
+            if (error.response?.status) {
+                m += ` (${error.response.status})`;
+            }
+
+            console.error(chalk.red(m));
+        });
+
+        phisherman.onIdentityComplete((identity, successCount) => {
+            console.info(
+                chalk.blue(
+                    `▶ Identity ${identity.id} completed with ${successCount} successful requests.`
+                )
+            );
+        });
+
         await phisherman.start();
         await phisherman.waitForCompleted();
     }
+
+    private constructor() {}
 }
 
 export default RunCommand;
