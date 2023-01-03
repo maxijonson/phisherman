@@ -2,13 +2,14 @@ import PQueue from "p-queue";
 import "../Template"; // HACK: Importing all templates so they register themselves
 import Config from "../Config/Config";
 import Identity from "../Identity/Identity";
-import axios, { AxiosError } from "axios";
-import chalk from "chalk";
+import axios from "axios";
 import { Endpoint, EndpointData } from "../Config/schema";
 import Template from "../Template/Template";
 
 class Runner {
     private identities: Identity[] = [];
+    private queue: PQueue;
+    private queueHasInit = false;
 
     constructor(private config: Config) {
         this.generateIdentities();
@@ -19,6 +20,17 @@ class Runner {
         for (let i = 0; i < this.config.iterations; i++) {
             this.identities.push(new Identity());
         }
+    }
+
+    private async initQueue() {
+        this.queue = new PQueue({ concurrency: this.config.concurrency });
+        this.queue.pause();
+        this.queue.addAll(
+            this.identities.map(
+                (identity) => () => this.spamEndpoints(identity)
+            )
+        );
+        this.queueHasInit = true;
     }
 
     private applyTemplates(
@@ -66,77 +78,77 @@ class Runner {
         }
     }
 
-    public async run() {
-        const queue = new PQueue({ concurrency: this.config.concurrency });
+    /**
+     * Sends the given identity's credentials to the given endpoint.
+     */
+    public async sendCredentials(
+        identity: Identity,
+        endpoint: Endpoint,
+        cookie?: string
+    ) {
+        const url = `${this.config.baseUrl}/${endpoint.path}`;
+        const method = endpoint.method.toLowerCase();
+        const data = this.getTransformedData(endpoint.data, identity, endpoint);
+        const headers = this.applyTemplates(
+            endpoint.headers,
+            identity,
+            endpoint
+        );
 
-        for (const identity of this.identities) {
-            queue.add(async () => {
-                let cookie = "";
-                for (const endpoint of this.config.endpoints) {
-                    const url = `${this.config.baseUrl}/${endpoint.path}`;
-                    const method = endpoint.method.toLowerCase();
-                    const data = this.getTransformedData(
-                        endpoint.data,
-                        identity,
-                        endpoint
-                    );
-                    const headers = this.applyTemplates(
-                        endpoint.headers,
-                        identity,
-                        endpoint
-                    );
-
-                    if (cookie) {
-                        headers["Cookie"] = cookie;
-                    }
-
-                    try {
-                        const response = await axios({
-                            url,
-                            method,
-                            data,
-                            headers,
-                        });
-
-                        if (response.headers["set-cookie"]) {
-                            cookie = response.headers["set-cookie"][0];
-                        }
-
-                        console.info(
-                            chalk.green(
-                                "✔",
-                                `[${identity.id}]`,
-                                method.toUpperCase(),
-                                url
-                            )
-                        );
-                    } catch (error) {
-                        if (error instanceof AxiosError && error.response) {
-                            console.error(
-                                chalk.red(
-                                    "✗",
-                                    `[${identity.id}]`,
-                                    method.toUpperCase(),
-                                    url,
-                                    `(${error.response.status})`
-                                )
-                            );
-                        } else {
-                            console.error(
-                                chalk.red(
-                                    "✗",
-                                    `[${identity.id}]`,
-                                    method.toUpperCase(),
-                                    url
-                                )
-                            );
-                        }
-                    }
-                }
-            });
+        if (cookie) {
+            headers["Cookie"] = cookie;
         }
 
-        await queue.onIdle();
+        const response = await axios({
+            url,
+            method,
+            data,
+            headers,
+        });
+
+        return response;
+    }
+
+    /**
+     * Spams all endpoints with the given identity.
+     */
+    public async spamEndpoints(identity: Identity) {
+        let cookie = "";
+
+        for (const endpoint of this.config.endpoints) {
+            try {
+                const response = await this.sendCredentials(
+                    identity,
+                    endpoint,
+                    cookie
+                );
+
+                if (response.headers["set-cookie"]) {
+                    cookie = response.headers["set-cookie"][0];
+                }
+            } catch (_) {}
+        }
+    }
+
+    /**
+     * Starts the spammer. Returns a promise when the queue has been initialized and the runner has started. (Not when the spamming has finished)
+     */
+    public async start() {
+        if (!this.queueHasInit) {
+            await this.initQueue();
+        }
+        this.queue.start();
+    }
+
+    /**
+     * Pauses the spammer.
+     */
+    public pause() {
+        this.queue.pause();
+    }
+
+    public async waitForCompleted() {
+        await this.queue.onIdle();
     }
 }
 

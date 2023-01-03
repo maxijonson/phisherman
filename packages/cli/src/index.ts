@@ -78,7 +78,8 @@ const DEFAULT_CONFIG = "phisherman.config.json";
 
                 const configObject = fs.readJSONSync(argv.config);
                 const phisherman = new Phisherman(configObject);
-                await phisherman.run();
+                await phisherman.start();
+                await phisherman.waitForCompleted();
             }
         )
         .help().argv;
