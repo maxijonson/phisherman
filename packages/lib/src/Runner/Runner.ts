@@ -27,7 +27,7 @@ class Runner {
     private onEndpointErrorCallbacks: OnEndpointErrorCallback[] = [];
     private onIdentityCompleteCallbacks: OnIdentityCompleteCallback[] = [];
 
-    constructor(private config: Config) {
+    constructor(public readonly config: Config) {
         this.generateIdentities();
         this.queue = new PQueue({ concurrency: this.config.concurrency });
     }
@@ -270,6 +270,20 @@ class Runner {
      */
     public offAllIdentityComplete() {
         this.onIdentityCompleteCallbacks = [];
+    }
+
+    /**
+     * Returns the number of identities that are being used.
+     */
+    public getIdentityCount() {
+        return this.identities.length;
+    }
+
+    /**
+     * Returns the number of endpoints that are being used.
+     */
+    public getEndpointCount() {
+        return this.config.endpoints.length * this.getIdentityCount();
     }
 }
 
