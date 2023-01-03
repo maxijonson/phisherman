@@ -2,7 +2,7 @@ import PQueue from "p-queue";
 import "../Template"; // HACK: Importing all templates so they register themselves
 import Config from "../Config/Config";
 import Identity from "../Identity/Identity";
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import { Endpoint, EndpointData } from "../Config/schema";
 import Template from "../Template/Template";
 
@@ -11,8 +11,26 @@ class Runner {
     private queue: PQueue;
     private queueHasInit = false;
 
+    private onSuccessCallbacks: ((
+        response: AxiosResponse,
+        identity: Identity,
+        endpoint: Endpoint
+    ) => void)[] = [];
+
+    private onErrorCallbacks: ((
+        error: Error,
+        identity: Identity,
+        endpoint: Endpoint
+    ) => void)[] = [];
+
+    private onIdentityCompleteCallbacks: ((
+        identity: Identity,
+        successCount: number
+    ) => void)[] = [];
+
     constructor(private config: Config) {
         this.generateIdentities();
+        this.queue = new PQueue({ concurrency: this.config.concurrency });
     }
 
     private generateIdentities() {
@@ -23,12 +41,12 @@ class Runner {
     }
 
     private async initQueue() {
-        this.queue = new PQueue({ concurrency: this.config.concurrency });
         this.queue.pause();
         this.queue.addAll(
-            this.identities.map(
-                (identity) => () => this.spamEndpoints(identity)
-            )
+            this.identities.map((identity) => async () => {
+                const successCount = await this.spamEndpoints(identity);
+                this.notifyIdentityComplete(identity, successCount);
+            })
         );
         this.queueHasInit = true;
     }
@@ -109,11 +127,38 @@ class Runner {
         return response;
     }
 
+    private notifyEndpointSuccess(
+        response: AxiosResponse,
+        identity: Identity,
+        endpoint: Endpoint
+    ) {
+        for (const callback of this.onSuccessCallbacks) {
+            callback(response, identity, endpoint);
+        }
+    }
+
+    private notifyEndpointError(
+        error: Error,
+        identity: Identity,
+        endpoint: Endpoint
+    ) {
+        for (const callback of this.onErrorCallbacks) {
+            callback(error, identity, endpoint);
+        }
+    }
+
+    private notifyIdentityComplete(identity: Identity, successCount: number) {
+        for (const callback of this.onIdentityCompleteCallbacks) {
+            callback(identity, successCount);
+        }
+    }
+
     /**
-     * Spams all endpoints with the given identity.
+     * Spams all endpoints with the given identity. Returns the number of successful requests.
      */
     public async spamEndpoints(identity: Identity) {
         let cookie = "";
+        let successCount = 0;
 
         for (const endpoint of this.config.endpoints) {
             try {
@@ -123,11 +168,18 @@ class Runner {
                     cookie
                 );
 
+                this.notifyEndpointSuccess(response, identity, endpoint);
+                ++successCount;
+
                 if (response.headers["set-cookie"]) {
                     cookie = response.headers["set-cookie"][0];
                 }
-            } catch (_) {}
+            } catch (error) {
+                this.notifyEndpointError(error, identity, endpoint);
+            }
         }
+
+        return successCount;
     }
 
     /**
@@ -147,8 +199,83 @@ class Runner {
         this.queue.pause();
     }
 
+    /**
+     * Promise that resolves when the spammer has finished.
+     */
     public async waitForCompleted() {
         await this.queue.onIdle();
+    }
+
+    /**
+     * Callback that is called when an endpoint has been successfully sent a request to.
+     */
+    public onEndpointSuccess(callback: typeof this.onSuccessCallbacks[0]) {
+        this.onSuccessCallbacks.push(callback);
+    }
+
+    /**
+     * Removes the given callback from the list of callbacks that are called when an endpoint has been successfully sent a request to.
+     */
+    public offEndpointSuccess(callback: typeof this.onSuccessCallbacks[0]) {
+        this.onSuccessCallbacks = this.onSuccessCallbacks.filter(
+            (cb) => cb !== callback
+        );
+    }
+
+    /**
+     * Removes all callbacks that are called when an endpoint has been successfully sent a request to.
+     */
+    public offAllEndpointSuccess() {
+        this.onSuccessCallbacks = [];
+    }
+
+    /**
+     * Callback that is called when an endpoint has failed to send a request to.
+     */
+    public onEndpointError(callback: typeof this.onErrorCallbacks[0]) {
+        this.onErrorCallbacks.push(callback);
+    }
+
+    /**
+     * Removes the given callback from the list of callbacks that are called when an endpoint has failed to send a request to.
+     */
+    public offEndpointError(callback: typeof this.onErrorCallbacks[0]) {
+        this.onErrorCallbacks = this.onErrorCallbacks.filter(
+            (cb) => cb !== callback
+        );
+    }
+
+    /**
+     * Removes all callbacks that are called when an endpoint has failed to send a request to.
+     */
+    public offAllEndpointError() {
+        this.onErrorCallbacks = [];
+    }
+
+    /**
+     * Callback that is called when an identity has completed all endpoints.
+     */
+    public onIdentityComplete(
+        callback: typeof this.onIdentityCompleteCallbacks[0]
+    ) {
+        this.onIdentityCompleteCallbacks.push(callback);
+    }
+
+    /**
+     * Removes the given callback from the list of callbacks that are called when an identity has completed all endpoints.
+     */
+    public offIdentityComplete(
+        callback: typeof this.onIdentityCompleteCallbacks[0]
+    ) {
+        this.onIdentityCompleteCallbacks =
+            this.onIdentityCompleteCallbacks.filter((cb) => cb !== callback);
+    }
+
+    /**
+     * Removes all callbacks that are called when an identity has completed all endpoints.
+     */
+    public offAllIdentityComplete() {
+        this.onIdentityCompleteCallbacks = [];
     }
 }
 
