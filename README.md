@@ -9,3 +9,8 @@ Phisherman is a tool for spamming fake credentials to phishing websites (specifi
 Phisherman consists of two packages, found in the `packages` directory: 
 - [`phisherman`](packages/lib) (`@maxijonson/phisherman`) - a library that can be used to programmatically interact with the Phisherman API.
 - [`phisherman-cli`](packages/cli) (`@maxijonson/phisherman-cli`) - a CLI tool that can be used to interact with the API from the command line.
+
+## Demo
+
+<!-- Insert demo.gif -->
+![Demo](demo.gif)
